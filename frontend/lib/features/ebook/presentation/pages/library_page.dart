@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend/router/app_router_name.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/widgets/app_shimmer.dart';
 import '../../../../di/injection.dart';
-import '../../../../router/app_router.dart';
 import '../../domain/entities/ebook.dart';
 import '../bloc/ebook_bloc.dart';
 import '../widgets/bookshelf.dart';
@@ -55,7 +55,7 @@ class _LibraryPageState extends State<LibraryPage> {
           appBar: AppBar(
             title: Text('My Library', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
             actions: [
-              IconButton(tooltip: 'Upload', icon: const Icon(Icons.upload_file_rounded), onPressed: () => context.pushNamed(AppRouterName.uploadRouteName)),
+              IconButton(tooltip: 'Upload', icon: const FaIcon(FontAwesomeIcons.upload), onPressed: () => context.pushNamed(AppRouterName.uploadRouteName)),
               const SizedBox(width: 8),
             ],
           ),
@@ -73,7 +73,11 @@ class _LibraryPageState extends State<LibraryPage> {
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton.extended(onPressed: () => context.pushNamed(AppRouterName.uploadRouteName), icon: const Icon(Icons.add_rounded), label: const Text('Upload')),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () => context.pushNamed(AppRouterName.uploadRouteName),
+            icon: const FaIcon(FontAwesomeIcons.plus),
+            label: const Text('Upload'),
+          ),
         ),
       ),
     );
@@ -91,7 +95,7 @@ class _LibraryPageState extends State<LibraryPage> {
         key: const ValueKey('empty'),
         title: 'No ebooks yet',
         message: 'Upload your first ebook to start building your digital library.',
-        action: FilledButton.icon(onPressed: () => context.pushNamed(AppRouterName.uploadRouteName), icon: const Icon(Icons.upload_file_rounded), label: const Text('Upload Ebook')),
+        action: FilledButton.icon(onPressed: () => context.pushNamed(AppRouterName.uploadRouteName), icon: const FaIcon(FontAwesomeIcons.filePdf), label: const Text('Upload Ebook')),
       );
     }
 
@@ -107,14 +111,15 @@ class _LibraryPageState extends State<LibraryPage> {
                 onChanged: (value) => context.read<EbookBloc>().add(EbookSearchChanged(value)),
                 onClear: () {
                   _searchController.clear();
+                  FocusScope.of(context).unfocus();
                   context.read<EbookBloc>().add(const EbookSearchCleared());
                 },
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.auto_stories_rounded, color: Theme.of(context).colorScheme.primary),
-                  const SizedBox(width: 8),
+                  FaIcon(FontAwesomeIcons.bookOpen, color: Theme.of(context).colorScheme.primary, size: 20),
+                  const SizedBox(width: 10),
                   Text(state.isSearching ? '${state.resultCount} results' : '${state.ebooks.length} books', style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800)),
                 ],
               ),
@@ -129,9 +134,10 @@ class _LibraryPageState extends State<LibraryPage> {
                   action: OutlinedButton.icon(
                     onPressed: () {
                       _searchController.clear();
+                      FocusScope.of(context).unfocus();
                       context.read<EbookBloc>().add(const EbookSearchCleared());
                     },
-                    icon: const Icon(Icons.close_rounded),
+                    icon: const FaIcon(FontAwesomeIcons.xmark),
                     label: const Text('Clear Search'),
                   ),
                 )
