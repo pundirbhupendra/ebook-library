@@ -71,6 +71,25 @@ frontend/lib/
 └── main.dart
 ```
 
+
+
+📸 Screenshots
+<table>
+  <tr>
+    <td><img src="frontend/screenshots/image0.png" width="300"/></td>
+    <td><img src="frontend/screenshots/image1.png" width="300"/></td>
+    <td><img src="frontend/screenshots/image2.png" width="300"/></td>
+  </tr>
+  <tr>
+    <td><img src="frontend/screenshots/image3.png" width="300"/></td>
+    <td><img src="frontend/screenshots/image4.png" width="300"/></td>
+    <td><img src="frontend/screenshots/image5.png" width="300"/></td>
+  </tr>
+  <tr>
+    <td><img src="frontend/screenshots/image6.png" width="300"/></td>
+  </tr>
+</table>
+
 Layering:
 
 - Presentation owns pages, widgets, animations, and BLoC events/states.
