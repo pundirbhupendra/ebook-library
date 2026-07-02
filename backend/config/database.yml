@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "") %>
+  host: <%= ENV.fetch("POSTGRES_HOST", "localhost") %>
+
+development:
+  <<: *default
+  database: ebook_library_development
+
+test:
+  <<: *default
+  database: ebook_library_test
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("POSTGRES_DB", "ebook_library_production") %>

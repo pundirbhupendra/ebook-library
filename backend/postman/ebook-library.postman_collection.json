@@ -1,0 +1,91 @@
+{
+  "info": {
+    "name": "Digital Ebook Library API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "ebook_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "List Ebooks",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/ebooks"
+      }
+    },
+    {
+      "name": "Upload Ebook",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "ebook[title]",
+              "value": "Flutter Clean Architecture",
+              "type": "text"
+            },
+            {
+              "key": "ebook[author]",
+              "value": "Riya Sharma",
+              "type": "text"
+            },
+            {
+              "key": "ebook[file]",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": "{{base_url}}/api/ebooks"
+      }
+    },
+    {
+      "name": "Show Ebook",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/ebooks/{{ebook_id}}"
+      }
+    },
+    {
+      "name": "Search Ebooks",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/ebooks/search?q=rails",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ebooks", "search"],
+          "query": [
+            {
+              "key": "q",
+              "value": "rails"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Download Ebook",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/ebooks/{{ebook_id}}/download"
+      }
+    },
+    {
+      "name": "Delete Ebook",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/ebooks/{{ebook_id}}"
+      }
+    }
+  ]
+}
