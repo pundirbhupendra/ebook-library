@@ -30,10 +30,11 @@ class Bookshelf extends StatelessWidget {
                 clipBehavior: Clip.none,
                 children: [
                   Positioned(
-                    left: -10,
-                    right: -10,
-                    bottom: 4,
-                    height: 26,
+                    // center the plank within the book cell to avoid overlapping neighbors
+                    bottom: 6,
+                    height: 28,
+                    left: 8,
+                    right: 8,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: Theme.of(context).brightness == Brightness.light ? const Color(0xFFB9783D) : const Color(0xFF5A3423),
@@ -51,12 +52,26 @@ class Bookshelf extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 8),
-            Container(
-              height: 8,
-              width: 72,
-              decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.light ? const Color(0xFF8C6030) : const Color(0xFF6B4A2A), borderRadius: BorderRadius.circular(4)),
-            ),
+            const SizedBox(height: 10),
+            //   SizedBox(
+            //     height: 12,
+            //     child: LayoutBuilder(
+            //       builder: (ctx, constraints) {
+            //         final w = constraints.maxWidth * 0.72;
+            //         return Center(
+            //           child: Container(
+            //             width: w,
+            //             height: 8,
+            //             decoration: BoxDecoration(
+            //               color: Theme.of(context).brightness == Brightness.light ? const Color(0xFF8C6030) : const Color(0xFF6B4A2A),
+            //               borderRadius: BorderRadius.circular(4),
+            //               boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 3))],
+            //             ),
+            //           ),
+            //         );
+            //       },
+            //     ),
+            //   ),
           ],
         );
       },

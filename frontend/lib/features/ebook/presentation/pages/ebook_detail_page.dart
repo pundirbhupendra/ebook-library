@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend/router/app_router_name.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,7 +11,6 @@ import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/services/file_service.dart';
 import '../../../../core/utils/file_size_formatter.dart';
 import '../../../../di/injection.dart';
-import '../../../../router/app_router.dart';
 import '../../domain/entities/ebook.dart';
 import '../bloc/ebook_bloc.dart';
 import '../widgets/book_cover.dart';
@@ -34,7 +34,14 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Details', style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0.3, fontSize: 18)),
+        title: const Text(
+          'Details',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.3,
+            fontSize: 18,
+          ),
+        ),
         centerTitle: false,
       ),
       body: ListView(
@@ -53,13 +60,17 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
           Text(
             ebook.title,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 6),
           Text(
             ebook.author,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 28),
           Wrap(
@@ -68,27 +79,45 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
             alignment: WrapAlignment.center,
             children: [
               _MetaChip(icon: Icons.description_rounded, label: ebook.fileType),
-              _MetaChip(icon: Icons.storage_rounded, label: FileSizeFormatter.format(ebook.fileSize)),
-              _MetaChip(icon: Icons.calendar_month_rounded, label: ebook.uploadedAt.displayDate),
+              _MetaChip(
+                icon: Icons.storage_rounded,
+                label: FileSizeFormatter.format(ebook.fileSize),
+              ),
+              _MetaChip(
+                icon: Icons.calendar_month_rounded,
+                label: ebook.uploadedAt.displayDate,
+              ),
             ],
           ),
           const SizedBox(height: 32),
           FilledButton.icon(
-            onPressed: () => context.pushNamed(AppRouterName.pdfReaderRouteName, extra: ebook),
-            icon: const Icon(Icons.menu_book_rounded),
+            onPressed: () => context.pushNamed(
+              AppRouterName.pdfReaderRouteName,
+              extra: ebook,
+            ),
+            icon: const FaIcon(FontAwesomeIcons.bookOpen),
             label: const Text('Read'),
           ),
           const SizedBox(height: 12),
           OutlinedButton.icon(
-            onPressed: _isDownloading ? null : () => _downloadEbook(context, ebook),
-            icon: _isDownloading ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.download_rounded),
+            onPressed: _isDownloading
+                ? null
+                : () => _downloadEbook(context, ebook),
+            icon: _isDownloading
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const FaIcon(FontAwesomeIcons.download),
             label: Text(_isDownloading ? 'Downloading...' : 'Download'),
           ),
           const SizedBox(height: 12),
           TextButton.icon(
-            style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
             onPressed: () => _confirmDelete(context, ebook),
-            icon: const Icon(Icons.delete_rounded),
+            icon: const FaIcon(FontAwesomeIcons.trash),
             label: const Text('Delete'),
           ),
         ],
@@ -105,7 +134,11 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
     try {
       final response = await sl<Dio>().get<List<int>>(
         ApiEndpoints.download(ebook.id.toString()),
-        options: Options(responseType: ResponseType.bytes, followRedirects: true, validateStatus: (status) => status != null && status < 500),
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+          validateStatus: (status) => status != null && status < 500,
+        ),
       );
 
       final data = response.data;
@@ -113,7 +146,9 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
         throw const HttpException('Download failed');
       }
 
-      final fileName = ebook.filename.isNotEmpty ? ebook.filename : '${ebook.title}.pdf';
+      final fileName = ebook.filename.isNotEmpty
+          ? ebook.filename
+          : '${ebook.title}.pdf';
       final downloadFile = await sl<FileService>().createDownloadFile(fileName);
       await downloadFile.writeAsBytes(data, flush: true);
 
@@ -122,7 +157,9 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
       debugPrint('File saved at: ${downloadFile.path}');
     } catch (_) {
       if (!context.mounted) return;
-      messenger.showSnackBar(const SnackBar(content: Text('Download failed. Please try again.')));
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Download failed. Please try again.')),
+      );
     } finally {
       if (mounted) {
         setState(() => _isDownloading = false);

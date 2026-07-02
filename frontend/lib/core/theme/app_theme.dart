@@ -10,29 +10,20 @@ class AppTheme {
   static const Color oxblood = Color(0xFF8D2F2C);
 
   static ThemeData get light {
-    final scheme = ColorScheme.fromSeed(
-      seedColor: walnut,
-      brightness: Brightness.light,
-      primary: walnut,
-      secondary: brass,
-      surface: const Color(0xFFFFFCF5),
-    );
+    final scheme = ColorScheme.fromSeed(seedColor: walnut, brightness: Brightness.light, primary: walnut, secondary: brass, surface: const Color(0xFFFFFCF5));
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: parchment,
-      fontFamily: 'Roboto',
+      fontFamily: 'Inter',
+      fontFamilyFallback: const ['Roboto', 'Helvetica', 'Arial'],
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         foregroundColor: ink,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: TextStyle(
-          color: ink,
-          fontSize: 28,
-          fontWeight: FontWeight.w800,
-        ),
+        titleTextStyle: TextStyle(color: ink, fontSize: 28, fontWeight: FontWeight.w800),
       ),
       cardTheme: CardThemeData(
         color: scheme.surface,
@@ -77,29 +68,20 @@ class AppTheme {
   }
 
   static ThemeData get dark {
-    final scheme = ColorScheme.fromSeed(
-      seedColor: brass,
-      brightness: Brightness.dark,
-      primary: const Color(0xFFE7B75A),
-      secondary: const Color(0xFF7FC7B3),
-      surface: const Color(0xFF1D1814),
-    );
+    final scheme = ColorScheme.fromSeed(seedColor: brass, brightness: Brightness.dark, primary: const Color(0xFFE7B75A), secondary: const Color(0xFF7FC7B3), surface: const Color(0xFF1D1814));
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: const Color(0xFF15110F),
-      fontFamily: 'Roboto',
+      fontFamily: 'Inter',
+      fontFamilyFallback: const ['Roboto', 'Helvetica', 'Arial'],
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         foregroundColor: Color(0xFFF7EFE2),
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: TextStyle(
-          color: Color(0xFFF7EFE2),
-          fontSize: 28,
-          fontWeight: FontWeight.w800,
-        ),
+        titleTextStyle: TextStyle(color: Color(0xFFF7EFE2), fontSize: 28, fontWeight: FontWeight.w800),
       ),
       cardTheme: CardThemeData(
         color: scheme.surface,

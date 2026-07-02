@@ -35,30 +35,11 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
       appBar: _fullscreen
           ? null
           : AppBar(
-              title: Text(
-                widget.ebook.title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.3,
-                  fontSize: 18,
-                ),
-              ),
+              title: Text(widget.ebook.title, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
               actions: [
-                IconButton(
-                  tooltip: 'Previous page',
-                  onPressed: _controller.previousPage,
-                  icon: const Icon(Icons.keyboard_arrow_left_rounded),
-                ),
-                IconButton(
-                  tooltip: 'Next page',
-                  onPressed: _controller.nextPage,
-                  icon: const Icon(Icons.keyboard_arrow_right_rounded),
-                ),
-                IconButton(
-                  tooltip: 'Fullscreen',
-                  onPressed: () => setState(() => _fullscreen = true),
-                  icon: const Icon(Icons.fullscreen_rounded),
-                ),
+                IconButton(tooltip: 'Previous page', onPressed: _controller.previousPage, icon: const Icon(Icons.keyboard_arrow_left_rounded)),
+                IconButton(tooltip: 'Next page', onPressed: _controller.nextPage, icon: const Icon(Icons.keyboard_arrow_right_rounded)),
+                IconButton(tooltip: 'Fullscreen', onPressed: () => setState(() => _fullscreen = true), icon: const Icon(Icons.fullscreen_rounded)),
               ],
             ),
       body: Stack(
@@ -77,25 +58,15 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                 if (page > 1) _controller.jumpToPage(page);
               },
               onPageChanged: (details) {
-                _ebookBloc.add(
-                  EbookReaderPageChanged(
-                    ebookId: widget.ebook.id,
-                    page: details.newPageNumber,
-                  ),
-                );
+                _ebookBloc.add(EbookReaderPageChanged(ebookId: widget.ebook.id, page: details.newPageNumber));
               },
             ),
-          if (url != null && url.isNotEmpty && !_loaded)
-            const Center(child: CircularProgressIndicator()),
+          if (url != null && url.isNotEmpty && !_loaded) const Center(child: CircularProgressIndicator()),
           if (_fullscreen)
             Positioned(
               top: MediaQuery.paddingOf(context).top + 8,
               right: 12,
-              child: IconButton.filledTonal(
-                tooltip: 'Exit fullscreen',
-                onPressed: () => setState(() => _fullscreen = false),
-                icon: const Icon(Icons.fullscreen_exit_rounded),
-              ),
+              child: IconButton.filledTonal(tooltip: 'Exit fullscreen', onPressed: () => setState(() => _fullscreen = false), icon: const Icon(Icons.fullscreen_exit_rounded)),
             ),
         ],
       ),
