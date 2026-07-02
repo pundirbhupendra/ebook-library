@@ -1,0 +1,11 @@
+/storage/*
+!/storage/.keep
+/tmp/*
+!/tmp/.keep
+/log/*
+!/log/.keep
+/.bundle
+/vendor/bundle
+/coverage
+.env
+.env.*
