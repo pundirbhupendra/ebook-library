@@ -20,12 +20,7 @@ class Bookshelf extends StatelessWidget {
     return GridView.builder(
       key: const ValueKey('bookshelf_grid'),
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 108),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: 36,
-        crossAxisSpacing: 18,
-        childAspectRatio: 0.58,
-      ),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, mainAxisSpacing: 36, crossAxisSpacing: 18, childAspectRatio: 0.58),
       itemCount: ebooks.length,
       itemBuilder: (context, index) {
         return Column(
@@ -41,27 +36,16 @@ class Bookshelf extends StatelessWidget {
                     height: 26,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? const Color(0xFFB9783D)
-                            : const Color(0xFF5A3423),
+                        color: Theme.of(context).brightness == Brightness.light ? const Color(0xFFB9783D) : const Color(0xFF5A3423),
                         borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.18),
-                            blurRadius: 14,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
+                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 14, offset: const Offset(0, 6))],
                       ),
                     ),
                   ),
                   Positioned.fill(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 18),
-                      child: EbookCard(
-                        ebook: ebooks[index],
-                        onTap: () => onBookTap(ebooks[index]),
-                      ),
+                      child: EbookCard(ebook: ebooks[index], onTap: () => onBookTap(ebooks[index])),
                     ),
                   ),
                 ],
@@ -71,12 +55,7 @@ class Bookshelf extends StatelessWidget {
             Container(
               height: 8,
               width: 72,
-              decoration: BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.light
-                    ? const Color(0xFF8C6030)
-                    : const Color(0xFF6B4A2A),
-                borderRadius: BorderRadius.circular(4),
-              ),
+              decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.light ? const Color(0xFF8C6030) : const Color(0xFF6B4A2A), borderRadius: BorderRadius.circular(4)),
             ),
           ],
         );
