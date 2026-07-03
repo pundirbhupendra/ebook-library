@@ -10,55 +10,62 @@ class EmptyBookshelf extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 520),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: Theme.of(context).brightness == Brightness.light ? const [Color(0xFFFFF7E3), Color(0xFFF6E0C4)] : const [Color(0xFF2C1F18), Color(0xFF1B140F)],
-                  ),
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.14), blurRadius: 24, offset: const Offset(0, 12))],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 180,
-                        child: CustomPaint(painter: _EmptyShelfPainter(theme.colorScheme), child: const SizedBox.expand()),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(28),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: Theme.of(context).brightness == Brightness.light ? const [Color(0xFFFFF7E3), Color(0xFFF6E0C4)] : const [Color(0xFF2C1F18), Color(0xFF1B140F)],
+                        ),
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.14), blurRadius: 24, offset: const Offset(0, 12))],
                       ),
-                      const SizedBox(height: 18),
-                      Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 180,
+                              child: CustomPaint(painter: _EmptyShelfPainter(theme.colorScheme), child: const SizedBox.expand()),
+                            ),
+                            const SizedBox(height: 18),
+                            Text(
+                              title,
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              message,
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant, height: 1.5),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 10),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant, height: 1.5),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(width: 220, child: action),
+                  ],
                 ),
               ),
-              const SizedBox(height: 24),
-              SizedBox(width: 220, child: action),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
