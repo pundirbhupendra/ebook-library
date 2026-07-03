@@ -12,33 +12,23 @@ class BookCover extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = _CoverPalette.from(ebook.id);
+    final content = _GeneratedCover(ebook: ebook, colors: colors, large: large);
+
     if (ebook.coverImageUrl case final url?) {
       return AspectRatio(
         aspectRatio: 0.68,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(7),
-          child: CachedNetworkImage(
-            imageUrl: url,
-            fit: BoxFit.cover,
-            errorWidget: (_, __, ___) => _GeneratedCover(
-              ebook: ebook,
-              colors: colors,
-              large: large,
-            ),
-          ),
+          borderRadius: BorderRadius.circular(16),
+          child: CachedNetworkImage(imageUrl: url, fit: BoxFit.cover, errorWidget: (_, __, ___) => content),
         ),
       );
     }
-    return _GeneratedCover(ebook: ebook, colors: colors, large: large);
+    return content;
   }
 }
 
 class _GeneratedCover extends StatelessWidget {
-  const _GeneratedCover({
-    required this.ebook,
-    required this.colors,
-    required this.large,
-  });
+  const _GeneratedCover({required this.ebook, required this.colors, required this.large});
 
   final Ebook ebook;
   final _CoverPalette colors;
@@ -50,27 +40,17 @@ class _GeneratedCover extends StatelessWidget {
       aspectRatio: 0.68,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.28),
-              blurRadius: large ? 24 : 12,
-              offset: Offset(0, large ? 16 : 8),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.22), blurRadius: large ? 22 : 12, offset: Offset(0, large ? 16 : 8))],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(16),
           child: Stack(
             children: [
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [colors.start, colors.end],
-                    ),
+                    gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [colors.start, colors.end]),
                   ),
                 ),
               ),
@@ -78,84 +58,65 @@ class _GeneratedCover extends StatelessWidget {
                 left: 0,
                 top: 0,
                 bottom: 0,
-                width: large ? 24 : 12,
+                width: large ? 24 : 14,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.white.withValues(alpha: 0.12),
-                      ),
-                    ),
+                    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black.withOpacity(0.24), Colors.black.withOpacity(0.12)]),
+                    border: Border(right: BorderSide(color: Colors.white.withOpacity(0.14), width: 1.2)),
                   ),
                 ),
               ),
               Positioned(
-                right: large ? 18 : 10,
-                top: large ? 18 : 10,
+                right: large ? 18 : 12,
+                top: large ? 16 : 12,
                 child: Container(
-                  width: large ? 52 : 30,
-                  height: large ? 52 : 30,
+                  width: large ? 52 : 34,
+                  height: large ? 52 : 34,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: colors.accent,
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.18), blurRadius: 8, offset: const Offset(0, 3))],
                   ),
                   child: Text(
                     ebook.fileType,
-                    style: TextStyle(
-                      color: Colors.black.withValues(alpha: 0.74),
-                      fontSize: large ? 12 : 7,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: TextStyle(color: Colors.black.withOpacity(0.82), fontSize: large ? 12 : 8, fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
               Positioned(
-                left: large ? 36 : 20,
-                right: large ? 18 : 10,
-                top: large ? 88 : 48,
+                left: large ? 34 : 18,
+                right: large ? 18 : 12,
+                top: large ? 82 : 50,
                 child: Text(
                   ebook.title,
-                  maxLines: large ? 4 : 4,
+                  maxLines: 4,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: large ? 26 : 14,
-                    fontWeight: FontWeight.w900,
-                    height: 1.04,
-                    letterSpacing: 0,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: large ? 26 : 15, fontWeight: FontWeight.w900, height: 1.06),
                 ),
               ),
               Positioned(
-                left: large ? 36 : 20,
-                right: large ? 18 : 10,
-                bottom: large ? 28 : 16,
+                left: large ? 34 : 18,
+                right: large ? 18 : 12,
+                bottom: large ? 26 : 18,
                 child: Text(
                   ebook.author.toUpperCase(),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.78),
-                    fontSize: large ? 14 : 9,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
+                  style: TextStyle(color: Colors.white.withOpacity(0.78), fontSize: large ? 13 : 10, fontWeight: FontWeight.w700, letterSpacing: 0.3),
+                ),
+              ),
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Colors.white.withOpacity(0.1), Colors.transparent]),
                   ),
                 ),
               ),
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.16),
-                        Colors.transparent,
-                        Colors.black.withValues(alpha: 0.18),
-                      ],
-                    ),
+                    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.18)], stops: const [0.54, 1]),
                   ),
                 ),
               ),

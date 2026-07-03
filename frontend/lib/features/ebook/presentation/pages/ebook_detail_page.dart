@@ -31,96 +31,63 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
   @override
   Widget build(BuildContext context) {
     final ebook = widget.ebook;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Details',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.3,
-            fontSize: 18,
-          ),
-        ),
-        centerTitle: false,
+        title: const Text('Details', style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0.3, fontSize: 18)),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
-        children: [
-          Center(
-            child: SizedBox(
-              height: 300,
-              child: Hero(
-                tag: 'book-cover-${ebook.id}',
-                child: BookCover(ebook: ebook, large: true),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth >= 840;
+            final content = Padding(
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1080),
+                child: isWide
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: Column(
+                              children: [
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(maxHeight: 280),
+                                  child: Hero(
+                                    tag: 'book-cover-${ebook.id}',
+                                    child: BookCover(ebook: ebook, large: false),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 25),
+                          Expanded(
+                            flex: 5,
+                            child: _DetailInfoSection(ebook: ebook, isDownloading: _isDownloading, onDownload: () => _downloadEbook(context, ebook), onDelete: () => _confirmDelete(context, ebook)),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxHeight: 240),
+                            child: Hero(
+                              tag: 'book-cover-${ebook.id}',
+                              child: BookCover(ebook: ebook, large: false),
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          _DetailInfoSection(ebook: ebook, isDownloading: _isDownloading, onDownload: () => _downloadEbook(context, ebook), onDelete: () => _confirmDelete(context, ebook)),
+                        ],
+                      ),
               ),
-            ),
-          ),
-          const SizedBox(height: 28),
-          Text(
-            ebook.title,
-            textAlign: TextAlign.center,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            ebook.author,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 28),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            alignment: WrapAlignment.center,
-            children: [
-              _MetaChip(icon: Icons.description_rounded, label: ebook.fileType),
-              _MetaChip(
-                icon: Icons.storage_rounded,
-                label: FileSizeFormatter.format(ebook.fileSize),
-              ),
-              _MetaChip(
-                icon: Icons.calendar_month_rounded,
-                label: ebook.uploadedAt.displayDate,
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          FilledButton.icon(
-            onPressed: () => context.pushNamed(
-              AppRouterName.pdfReaderRouteName,
-              extra: ebook,
-            ),
-            icon: const FaIcon(FontAwesomeIcons.bookOpen),
-            label: const Text('Read'),
-          ),
-          const SizedBox(height: 12),
-          OutlinedButton.icon(
-            onPressed: _isDownloading
-                ? null
-                : () => _downloadEbook(context, ebook),
-            icon: _isDownloading
-                ? const SizedBox.square(
-                    dimension: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const FaIcon(FontAwesomeIcons.download),
-            label: Text(_isDownloading ? 'Downloading...' : 'Download'),
-          ),
-          const SizedBox(height: 12),
-          TextButton.icon(
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            onPressed: () => _confirmDelete(context, ebook),
-            icon: const FaIcon(FontAwesomeIcons.trash),
-            label: const Text('Delete'),
-          ),
-        ],
+            );
+
+            return SingleChildScrollView(child: content);
+          },
+        ),
       ),
     );
   }
@@ -134,11 +101,7 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
     try {
       final response = await sl<Dio>().get<List<int>>(
         ApiEndpoints.download(ebook.id.toString()),
-        options: Options(
-          responseType: ResponseType.bytes,
-          followRedirects: true,
-          validateStatus: (status) => status != null && status < 500,
-        ),
+        options: Options(responseType: ResponseType.bytes, followRedirects: true, validateStatus: (status) => status != null && status < 500),
       );
 
       final data = response.data;
@@ -146,9 +109,7 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
         throw const HttpException('Download failed');
       }
 
-      final fileName = ebook.filename.isNotEmpty
-          ? ebook.filename
-          : '${ebook.title}.pdf';
+      final fileName = ebook.filename.isNotEmpty ? ebook.filename : '${ebook.title}.pdf';
       final downloadFile = await sl<FileService>().createDownloadFile(fileName);
       await downloadFile.writeAsBytes(data, flush: true);
 
@@ -157,9 +118,7 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
       debugPrint('File saved at: ${downloadFile.path}');
     } catch (_) {
       if (!context.mounted) return;
-      messenger.showSnackBar(
-        const SnackBar(content: Text('Download failed. Please try again.')),
-      );
+      messenger.showSnackBar(const SnackBar(content: Text('Download failed. Please try again.')));
     } finally {
       if (mounted) {
         setState(() => _isDownloading = false);
@@ -178,18 +137,107 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
   }
 }
 
-class _MetaChip extends StatelessWidget {
-  const _MetaChip({required this.icon, required this.label});
+class _DetailInfoSection extends StatelessWidget {
+  const _DetailInfoSection({required this.ebook, required this.isDownloading, required this.onDownload, required this.onDelete});
+
+  final Ebook ebook;
+  final bool isDownloading;
+  final VoidCallback onDownload;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(ebook.title, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900)),
+        const SizedBox(height: 8),
+        Text(ebook.author, style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        const SizedBox(height: 24),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: theme.colorScheme.outline.withOpacity(0.12)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Book details', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  _InfoTile(icon: Icons.description_rounded, label: ebook.fileType),
+                  const SizedBox(width: 12),
+                  _InfoTile(icon: Icons.calendar_month_rounded, label: ebook.uploadedAt.displayDate),
+                  // const SizedBox(width: 12),
+                  // _InfoTile(icon: Icons.storage_rounded, label: FileSizeFormatter.format(ebook.fileSize)),
+                ],
+              ),
+              const SizedBox(height: 18),
+              Text(
+                'A lighter, easier-to-scan details view keeps your library feeling premium while preserving the same book metadata you expect.',
+                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant, height: 1.5),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            FilledButton.icon(
+              onPressed: () => context.pushNamed(AppRouterName.pdfReaderRouteName, extra: ebook),
+              icon: const FaIcon(FontAwesomeIcons.bookOpen),
+              label: const Text('Read'),
+            ),
+            OutlinedButton.icon(
+              onPressed: isDownloading ? null : onDownload,
+              icon: isDownloading ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2)) : const FaIcon(FontAwesomeIcons.download),
+              label: Text(isDownloading ? 'Downloading...' : 'Download'),
+            ),
+            TextButton.icon(
+              style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
+              onPressed: onDelete,
+              icon: const FaIcon(FontAwesomeIcons.trash),
+              label: const Text('Delete'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _InfoTile extends StatelessWidget {
+  const _InfoTile({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      avatar: Icon(icon, size: 18),
-      label: Text(label),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.background,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Theme.of(context).colorScheme.outline.withOpacity(0.08)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
