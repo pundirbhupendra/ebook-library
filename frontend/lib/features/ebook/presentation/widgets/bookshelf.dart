@@ -24,7 +24,8 @@ class Bookshelf extends StatelessWidget {
         final width = constraints.maxWidth;
         final crossAxisCount = _crossAxisCount(width);
         final rowCount = (ebooks.length / crossAxisCount).ceil();
-        final bookWidth = (width - 40 - 14 * (crossAxisCount - 1)) / crossAxisCount;
+        final bookWidth =
+            (width - 40 - 14 * (crossAxisCount - 1)) / crossAxisCount;
 
         return ListView.builder(
           key: const ValueKey('bookshelf_grid'),
@@ -40,20 +41,33 @@ class Bookshelf extends StatelessWidget {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    const Positioned(bottom: 0, left: 0, right: 0, height: 52, child: _ShelfRowBackground()),
+                    const Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 52,
+                      child: _ShelfRowBackground(),
+                    ),
                     Positioned.fill(
                       bottom: 36,
                       child: Row(
-                        mainAxisAlignment: rowBooks.length == crossAxisCount ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
+                        mainAxisAlignment: rowBooks.length == crossAxisCount
+                            ? MainAxisAlignment.spaceBetween
+                            : MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: rowBooks
                             .map(
                               (ebook) => SizedBox(
                                 width: bookWidth,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 7),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 7,
+                                  ),
                                   child: RepaintBoundary(
-                                    child: EbookCard(ebook: ebook, onTap: () => onBookTap(ebook)),
+                                    child: EbookCard(
+                                      ebook: ebook,
+                                      onTap: () => onBookTap(ebook),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -83,10 +97,18 @@ class _ShelfRowBackground extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: isLight ? const [Color(0xFFBE8B54), Color(0xFF8B5D30)] : const [Color(0xFF4E342E), Color(0xFF35221B)],
+          colors: isLight
+              ? const [Color(0xFFBE8B54), Color(0xFF8B5D30)]
+              : const [Color(0xFF4E342E), Color(0xFF35221B)],
         ),
         borderRadius: BorderRadius.circular(28),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.16), blurRadius: 18, offset: const Offset(0, 8))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.16),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: CustomPaint(painter: _WoodGrainPainter(isLight: isLight)),
     );
@@ -100,12 +122,18 @@ class _WoodGrainPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final grainPaint = Paint()..color = Colors.white.withOpacity(isLight ? 0.08 : 0.06);
+    final grainPaint = Paint()
+      ..color = Colors.white.withValues(alpha: isLight ? 0.08 : 0.06);
     for (var i = 0; i < 6; i++) {
       final x = size.width * (0.1 + i * 0.15);
       final path = Path()
         ..moveTo(x, 4)
-        ..quadraticBezierTo(x + 12, size.height * 0.22, x - 10, size.height * 0.5)
+        ..quadraticBezierTo(
+          x + 12,
+          size.height * 0.22,
+          x - 10,
+          size.height * 0.5,
+        )
         ..quadraticBezierTo(x + 16, size.height * 0.78, x, size.height - 4);
       canvas.drawPath(path, grainPaint);
     }
