@@ -17,9 +17,30 @@ class BookCover extends StatelessWidget {
     if (ebook.coverImageUrl case final url?) {
       return AspectRatio(
         aspectRatio: 0.68,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: CachedNetworkImage(imageUrl: url, fit: BoxFit.cover, errorWidget: (_, __, ___) => content),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.14),
+                blurRadius: large ? 16 : 8,
+                offset: Offset(0, large ? 4 : 2),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.24),
+                blurRadius: large ? 24 : 12,
+                offset: Offset(0, large ? 16 : 8),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: CachedNetworkImage(
+              imageUrl: url,
+              fit: BoxFit.cover,
+              errorWidget: (_, __, ___) => content,
+            ),
+          ),
         ),
       );
     }
@@ -41,7 +62,18 @@ class _GeneratedCover extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.22), blurRadius: large ? 22 : 12, offset: Offset(0, large ? 16 : 8))],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.14),
+              blurRadius: large ? 16 : 8,
+              offset: Offset(0, large ? 4 : 2),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.24),
+              blurRadius: large ? 24 : 12,
+              offset: Offset(0, large ? 16 : 8),
+            ),
+          ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
@@ -100,8 +132,8 @@ class _GeneratedCover extends StatelessWidget {
                 right: large ? 18 : 12,
                 bottom: large ? 26 : 18,
                 child: Text(
-                  ebook.author.toUpperCase(),
-                  maxLines: 2,
+                  _getInitials(ebook.author),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.white.withOpacity(0.78), fontSize: large ? 13 : 10, fontWeight: FontWeight.w700, letterSpacing: 0.3),
                 ),
@@ -147,4 +179,13 @@ class _CoverPalette {
     final hash = seed.codeUnits.fold<int>(0, (sum, unit) => sum + unit);
     return palettes[hash % palettes.length];
   }
+}
+
+String _getInitials(String name) {
+  if (name.isEmpty) return '';
+  final parts = name.trim().split(RegExp(r'\s+'));
+  if (parts.length == 1) {
+    return parts[0].substring(0, parts[0].length.clamp(0, 3)).toUpperCase();
+  }
+  return (parts.first[0] + parts.last[0]).toUpperCase();
 }

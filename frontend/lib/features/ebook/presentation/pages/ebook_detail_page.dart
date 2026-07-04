@@ -35,9 +35,9 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
         title: const Text(
           'Details',
           style: TextStyle(
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.3,
-            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.2,
+            fontSize: 24,
           ),
         ),
         actions: [
@@ -56,7 +56,7 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
           builder: (context, constraints) {
             final isWide = constraints.maxWidth >= 840;
             final content = Padding(
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1080),
                 child: isWide
@@ -79,11 +79,11 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 24),
                               ],
                             ),
                           ),
-                          const SizedBox(width: 25),
+                          const SizedBox(width: 32),
                           Expanded(
                             flex: 5,
                             child: _DetailInfoSection(
@@ -103,7 +103,7 @@ class _EbookDetailPageState extends State<EbookDetailPage> {
                               child: BookCover(ebook: ebook, large: false),
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 28),
                           _DetailInfoSection(
                             ebook: ebook,
                             isDownloading: _isDownloading,
@@ -191,66 +191,87 @@ class _DetailInfoSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // Book Title — focal heading, semibold, max 2 lines
         Text(
           ebook.title,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w900,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
+            height: 1.3,
+            letterSpacing: -0.2,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
+        // Author — secondary emphasis with "by" prefix
         Text(
-          ebook.author,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+          'by ${ebook.author}',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.75),
+            fontWeight: FontWeight.w500,
+            fontSize: 15,
+            height: 1.4,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 28),
+
+        // Book Details Card
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(24),
+            color: theme.brightness == Brightness.light
+                ? Colors.white.withOpacity(0.85)
+                : theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: theme.colorScheme.outline.withValues(alpha: 0.12),
+              color: theme.colorScheme.outline.withValues(alpha: 0.08),
             ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Book details',
+                'Book Details',
                 style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 17,
+                  letterSpacing: 0.1,
                 ),
               ),
               const SizedBox(height: 16),
               Row(
                 children: [
-                  _InfoTile(
-                    icon: Icons.description_rounded,
-                    label: ebook.fileType,
+                  _DetailItem(
+                    icon: Icons.description_outlined,
+                    label: 'Format',
+                    value: ebook.fileType,
                   ),
-                  const SizedBox(width: 12),
-                  _InfoTile(
-                    icon: Icons.calendar_month_rounded,
-                    label: ebook.uploadedAt.displayDate,
+                  const SizedBox(width: 16),
+                  _DetailItem(
+                    icon: Icons.calendar_today_outlined,
+                    label: 'Uploaded',
+                    value: ebook.uploadedAt.shortDisplayDate,
                   ),
-                  // const SizedBox(width: 12),
-                  // _InfoTile(icon: Icons.storage_rounded, label: FileSizeFormatter.format(ebook.fileSize)),
                 ],
               ),
               const SizedBox(height: 18),
               Text(
                 'A lighter, easier-to-scan details view keeps your library feeling premium while preserving the same book metadata you expect.',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  height: 1.5,
+                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+                  height: 1.6,
+                  fontSize: 13,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 28),
+
+        // Action Buttons
         Row(
           children: [
             Expanded(
@@ -259,7 +280,7 @@ class _DetailInfoSection extends StatelessWidget {
                   AppRouterName.pdfReaderRouteName,
                   extra: ebook,
                 ),
-                icon: const FaIcon(FontAwesomeIcons.bookOpen),
+                icon: const FaIcon(FontAwesomeIcons.bookOpen, size: 16),
                 label: const Text('Read'),
               ),
             ),
@@ -269,10 +290,10 @@ class _DetailInfoSection extends StatelessWidget {
                 onPressed: isDownloading ? null : onDownload,
                 icon: isDownloading
                     ? const SizedBox.square(
-                        dimension: 18,
+                        dimension: 16,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const FaIcon(FontAwesomeIcons.download),
+                    : const FaIcon(FontAwesomeIcons.download, size: 16),
                 label: Text(isDownloading ? 'Downloading...' : 'Download'),
               ),
             ),
@@ -283,41 +304,65 @@ class _DetailInfoSection extends StatelessWidget {
   }
 }
 
-class _InfoTile extends StatelessWidget {
-  const _InfoTile({required this.icon, required this.label});
+class _DetailItem extends StatelessWidget {
+  const _DetailItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   final IconData icon;
   final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Theme.of(
-              context,
-            ).colorScheme.outline.withValues(alpha: 0.08),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                label,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
-              ),
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
             ),
-          ],
-        ),
+            child: Icon(
+              icon,
+              size: 18,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+

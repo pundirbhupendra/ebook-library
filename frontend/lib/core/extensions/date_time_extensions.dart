@@ -16,4 +16,22 @@ extension AppDateTimeFormatting on DateTime {
     ];
     return '${months[month - 1]} $day, $year';
   }
+
+  String get shortDisplayDate {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '$day ${months[month - 1]} $year';
+  }
 }

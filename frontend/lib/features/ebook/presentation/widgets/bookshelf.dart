@@ -9,70 +9,74 @@ class Bookshelf extends StatelessWidget {
   final List<Ebook> ebooks;
   final ValueChanged<Ebook> onBookTap;
 
-  static int _crossAxisCount(double width) {
-    if (width >= 1080) return 6;
-    if (width >= 860) return 5;
-    if (width >= 680) return 4;
-    if (width >= 480) return 3;
-    return 2;
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        final crossAxisCount = _crossAxisCount(width);
+        const double coverWidth = 120.0;
+        const double coverHeight = coverWidth / 0.68; // ~176.5
+
+        final double availableWidth = width - 40; // 20 padding on each side
+
+        // Responsive: 2 on mobile, up to 6 on desktop
+        final int crossAxisCount =
+            (availableWidth / (coverWidth + 24)).floor().clamp(2, 6);
+        final double itemWidth = availableWidth / crossAxisCount;
+
         final rowCount = (ebooks.length / crossAxisCount).ceil();
-        final bookWidth =
-            (width - 40 - 14 * (crossAxisCount - 1)) / crossAxisCount;
+
+        // Row height = cover + shelf thickness + gap for title/date below shelf
+        const double shelfThickness = 14.0;
+        const double metadataHeight = 72.0; // 16 gap + ~34 title (2 lines) + 4 gap + ~18 date
+        const double totalRowHeight =
+            coverHeight + shelfThickness + metadataHeight;
 
         return ListView.builder(
           key: const ValueKey('bookshelf_grid'),
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 108),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 108),
           itemCount: rowCount,
           itemBuilder: (context, rowIndex) {
             final start = rowIndex * crossAxisCount;
-            final rowBooks = ebooks.skip(start).take(crossAxisCount).toList();
+            final rowBooks =
+                ebooks.skip(start).take(crossAxisCount).toList();
+
+            // Shelf spans entire row width (edge-to-edge within padding)
             return Padding(
-              padding: const EdgeInsets.only(bottom: 28),
+              padding: const EdgeInsets.only(bottom: 24),
               child: SizedBox(
-                height: 318,
+                width: availableWidth,
+                height: totalRowHeight,
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    const Positioned(
-                      bottom: 0,
+                    // Wooden shelf: flush under the book covers
+                    Positioned(
+                      top: coverHeight - 4,
                       left: 0,
                       right: 0,
-                      height: 52,
-                      child: _ShelfRowBackground(),
+                      height: shelfThickness,
+                      child: const _ShelfRowBackground(),
                     ),
+
+                    // Row of ebook cards centered
                     Positioned.fill(
-                      bottom: 36,
                       child: Row(
                         mainAxisAlignment: rowBooks.length == crossAxisCount
-                            ? MainAxisAlignment.spaceBetween
+                            ? MainAxisAlignment.spaceEvenly
                             : MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: rowBooks
-                            .map(
-                              (ebook) => SizedBox(
-                                width: bookWidth,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 7,
-                                  ),
-                                  child: RepaintBoundary(
-                                    child: EbookCard(
-                                      ebook: ebook,
-                                      onTap: () => onBookTap(ebook),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: rowBooks.map((ebook) {
+                          return SizedBox(
+                            width: itemWidth,
+                            child: EbookCard(
+                              ebook: ebook,
+                              coverWidth: coverWidth,
+                              coverHeight: coverHeight,
+                              onTap: () => onBookTap(ebook),
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -98,19 +102,34 @@ class _ShelfRowBackground extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: isLight
-              ? const [Color(0xFFBE8B54), Color(0xFF8B5D30)]
-              : const [Color(0xFF4E342E), Color(0xFF35221B)],
+              ? const [Color(0xFFD4A76A), Color(0xFFAA7744)]
+              : const [Color(0xFF5D4037), Color(0xFF3E2723)],
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(3),
+        ),
+        border: Border(
+          top: BorderSide(
+            color: isLight
+                ? const Color(0xFFF0D5B0).withOpacity(0.8)
+                : const Color(0xFF8D6E63).withOpacity(0.5),
+            width: 1.0,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.16),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+            color: Colors.black.withOpacity(isLight ? 0.12 : 0.25),
+            blurRadius: 6,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: CustomPaint(painter: _WoodGrainPainter(isLight: isLight)),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(3),
+        ),
+        child: CustomPaint(painter: _WoodGrainPainter(isLight: isLight)),
+      ),
     );
   }
 }
@@ -123,18 +142,27 @@ class _WoodGrainPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final grainPaint = Paint()
-      ..color = Colors.white.withValues(alpha: isLight ? 0.08 : 0.06);
-    for (var i = 0; i < 6; i++) {
-      final x = size.width * (0.1 + i * 0.15);
+      ..color = Colors.white.withOpacity(isLight ? 0.07 : 0.05)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8;
+
+    // Subtle horizontal wood grain lines
+    for (var i = 0; i < 3; i++) {
+      final y = size.height * (0.25 + i * 0.25);
       final path = Path()
-        ..moveTo(x, 4)
+        ..moveTo(0, y)
         ..quadraticBezierTo(
-          x + 12,
-          size.height * 0.22,
-          x - 10,
-          size.height * 0.5,
+          size.width * 0.3,
+          y + 1.5,
+          size.width * 0.5,
+          y - 0.5,
         )
-        ..quadraticBezierTo(x + 16, size.height * 0.78, x, size.height - 4);
+        ..quadraticBezierTo(
+          size.width * 0.7,
+          y + 1,
+          size.width,
+          y,
+        );
       canvas.drawPath(path, grainPaint);
     }
   }

@@ -25,14 +25,20 @@ void main() {
           body: SizedBox(
             width: 180,
             height: 320,
-            child: EbookCard(ebook: ebook, onTap: () => tapped = true),
+            child: EbookCard(
+              ebook: ebook,
+              onTap: () => tapped = true,
+              coverWidth: 120,
+              coverHeight: 176,
+            ),
           ),
         ),
       ),
     );
 
     expect(find.text('Flutter Clean Architecture'), findsWidgets);
-    expect(find.text('Riya Sharma'), findsOneWidget);
+    expect(find.text('RS'), findsOneWidget);
+    expect(find.text('28 Jun 2026'), findsOneWidget);
     await tester.tap(find.byType(EbookCard));
     expect(tapped, isTrue);
   });

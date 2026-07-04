@@ -14,6 +14,7 @@ class EbookSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller,
       builder: (context, value, child) {
@@ -24,7 +25,14 @@ class EbookSearchBar extends StatelessWidget {
           textInputAction: TextInputAction.search,
           decoration: InputDecoration(
             hintText: 'Search title, author, or filename',
-            prefixIcon: const Icon(Icons.search_rounded),
+            hintStyle: TextStyle(
+              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+              fontSize: 15,
+            ),
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: theme.colorScheme.primary.withOpacity(0.8),
+            ),
             suffixIcon: value.text.isEmpty
                 ? null
                 : IconButton(
@@ -32,6 +40,26 @@ class EbookSearchBar extends StatelessWidget {
                     icon: const Icon(Icons.close_rounded),
                     onPressed: onClear,
                   ),
+            filled: true,
+            fillColor: theme.brightness == Brightness.light
+                ? Colors.white.withOpacity(0.9)
+                : theme.colorScheme.surfaceContainerHighest.withOpacity(0.4),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(28),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(28),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(28),
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary.withOpacity(0.3),
+                width: 1.5,
+              ),
+            ),
           ),
         );
       },
