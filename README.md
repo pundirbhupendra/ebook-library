@@ -71,9 +71,8 @@ frontend/lib/
 └── main.dart
 ```
 
-
-
 📸 Screenshots
+
 <table>
   <tr>
     <td><img src="frontend/screenshots/image0.png" width="300"/></td>
@@ -229,81 +228,3 @@ Use this checklist for the main user flows during assignment demo or review:
 - Open an ebook and confirm the download action is available.
 - Delete an ebook and verify the confirmation dialog appears and the record is removed.
 - Confirm the empty-state screen appears when no ebooks are available.
-
-## Product Thinking Decisions
-
-These are the product-oriented choices that shape the user experience:
-
-- When the library is empty, the app shows a friendly empty-state screen with a clear upload action instead of a blank page.
-- When upload fails or validation is triggered, the app shows clear inline feedback and a snackbar so the user understands what went wrong.
-- When the file is too large, the upload flow blocks the action and explains that PDFs must be smaller than 20 MB.
-- When search has no results, the app shows a no-results message and offers a quick way to clear the search.
-- While data is loading, the app displays a shimmer state so the interface feels responsive rather than frozen.
-- Delete confirmation is handled through a dedicated dialog before removing an ebook, which prevents accidental loss.
-- The experience stays simple by keeping actions focused on upload, search, open, download, and delete with minimal friction.
-
-## Product Decisions
-
-- The default dev flavor falls back to mock data if the Rails server is unavailable, keeping demos smooth while preserving API-ready code.
-- The library UI uses generated book covers so uploaded PDFs feel like a real shelf even before cover extraction exists.
-- Error handling is centralized through typed failures, which keeps pages focused on product states rather than transport details.
-- The reader remembers the last viewed page through the repository contract, ready to be swapped for local persistence later.
-
-## AI Tool Usage
-
-### AI Tools Used
-
-- GitHub Copilot
-- ChatGPT
-
-### How AI Was Used
-
-AI tools were used for architecture discussions, code suggestions, debugging, testing guidance, package evaluation, UI improvements, and documentation. They helped explore different implementation approaches and accelerate development.
-
-### Which Parts Were AI-Assisted
-
-AI was used to explore different implementation approaches and evaluate trade-offs for:
-
-- State management selection and architecture discussions
-- Dependency Injection setup and service registration strategy
-- Route management and navigation architecture
-- Package evaluation and selection
-- Flutter project structure and Clean Architecture organization
-- API design and backend implementation guidance
-- UI/UX improvement suggestions
-- Error handling and testing strategies
-- Documentation and README preparation
-  AI provided multiple implementation options and recommendations, which helped accelerate decision-making during development.
-
-### Manual Review and Improvements
-
-All AI-generated suggestions were reviewed before implementation. I manually:
-
-- Selected the final state management, routing, and DI approach
-- Evaluated and chose packages based on project requirements
-- Refined UI/UX decisions
-- Reviewed API contracts and application architecture
-- Improved code organization, error handling, and maintainability
-- Tested features and validated business logic
-
-### AI-Generated Suggestions Reviewed and Refined
-
-During development, several AI-generated suggestions were evaluated and refined before implementation:
-
-1. Rejected default UI recommendations (themes, colors, fonts, and icons) and implemented a custom design to improve usability and visual consistency.
-2. Refined architectural recommendations to better align with Clean Architecture principles and project requirements.
-3. Selected alternative packages after comparing multiple options based on maintainability, community support, and feature requirements.
-4. Revised routing, dependency injection, and state management recommendations to create a simpler and more scalable application structure.
-5. Modified generated code and implementation approaches where necessary to improve readability, performance, and maintainability.
-6. Adjusted API integration and error-handling strategies based on real-world testing and application requirements.
-
-### How AI Helped
-
-- Architecture: Evaluated trade-offs for state management, DI, routing, and project structure.
-- Debugging: Assisted with Rails, PostgreSQL, package configuration, and API integration issues.
-- Testing: Suggested validation scenarios, edge cases, and API test coverage.
-- Product Decisions: Provided ideas for UI improvements, search experience, reader workflow, and bonus features.
-
-### Ownership Statement
-
-AI was used as a development assistant, not as a replacement for engineering judgment. All architecture decisions, code reviews, testing, refinements, and final implementations were manually verified and remain my responsibility.
